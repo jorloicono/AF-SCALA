@@ -1,0 +1,140 @@
+// CREAR UNA CLASE
+
+class Person(var name: String, var vocation: String)
+
+// CREAR UNA INSTANCIA
+
+val p = Person("Robert Allen Zimmerman", "Harmonica Player")
+
+// ACCEDER ATRIBUTOS
+
+p.name       // "Robert Allen Zimmerman"
+p.vocation   // "Harmonica Player"
+
+// MODIFICAR ATRIBUTOS
+
+p.name = "Bob Dylan"
+p.vocation = "Musician"
+
+// CLASE CON METODOS
+
+class Person2(var firstName: String, var lastName: String):
+
+  println("initialization begins")
+  val fullName = firstName + " " + lastName
+
+  // a class method
+  def printFullName: Unit =
+    // access the `fullName` field, which is created above
+    println(fullName)
+
+  printFullName
+  println("initialization ends")
+
+val john = Person2("John", "Doe")
+john.printFullName
+
+// PARAMETROS POR DEFECTO EN EL CONSTRUCTOR
+
+class Socket(val timeout: Int = 5_000, val linger: Int = 5_000):
+  override def toString = s"timeout: $timeout, linger: $linger"
+
+val s1 = Socket()                  // timeout: 5000, linger: 5000
+val s2 = Socket(2_500)             // timeout: 2500, linger: 5000
+val s3 = Socket(10_000, 10_000)    // timeout: 10000, linger: 10000
+val s4 = Socket(timeout = 10_000)  // timeout: 10000, linger: 5000
+val s5 = Socket(linger = 10_000)   // timeout: 5000, linger: 10000
+
+// DEFINIR OBJETO 
+
+object StringUtils:
+  def truncate(s: String, length: Int): String = s.take(length)
+  def containsWhitespace(s: String): Boolean = s.matches(".*\\s.*")
+  def isNullOrEmpty(s: String): Boolean = s == null || s.trim.isEmpty
+
+// USAR OBJETO 
+
+StringUtils.truncate("Chuck Bartowski", 5)  // "Chuck"
+
+import StringUtils.*
+truncate("Chuck Bartowski", 5)       // "Chuck"
+containsWhitespace("Sarah Walker")   // true
+isNullOrEmpty("John Casey")          // false
+
+// OBJETO QUE CONTIENE VALORES
+
+object MathConstants:
+  val PI = 3.14159
+  val E = 2.71828
+
+println(MathConstants.PI)   // 3.14159
+
+// COMPANION OBJECTS
+
+import scala.math.*
+
+class Circle(val radius: Double):
+  def area: Double = Circle.calculateArea(radius)
+
+object Circle:
+  private def calculateArea(radius: Double): Double = Pi * pow(radius, 2.0)
+
+val circle1 = Circle(5.0)
+circle1.area
+
+// LOS TRAITS SON COMO INTERFACES DE JAVA, EN ELLOS PUEDO TENER METODOS ABSTRACTOS O CONCRETOS. AQUI TENGO UNO CON METODOS ABSTRACTOS, NO TIENEN UNA IMPLEMENTACION
+
+trait Employee:
+  def id: Int
+  def firstName: String
+  def lastName: String
+
+// PERO PODRIA TENER UNO CON METODOS CONCRETOS COMO ESTE QUE TIENE PARA STOP
+
+trait HasLegs:
+  def numLegs: Int
+  def walk(): Unit
+  def stop() = println("Stopped walking")
+
+// O ESTE OTRO
+
+trait HasTail:
+  def tailColor: String
+  def wagTail() = println("Tail is wagging")
+  def stopTail() = println("Tail is stopped")
+
+// UNA CLASE PUEDE HEREDAR DE ESTOS TRAITS COMO ESTA QUE HEREDA DE ESTOS DOS
+
+class IrishSetter(name: String) extends HasLegs, HasTail:
+  val numLegs = 4
+  val tailColor = "Red"
+  def walk() = println("I’m walking")
+  override def toString = s"$name is a Dog"
+
+// Y AQUI TENGO UNA IMPLEMENTACION DE LA MISMA 
+
+val d = IrishSetter("Big Red")   // "Big Red is a Dog"
+
+// UN ENUM ME SIRVA PARA DEFINIR UN TIPO DE DATO CON SUS POSIBLES SITUACIONES
+
+enum Color:
+  case Red, Green, Blue
+
+// TENGO ALGUNOS METODOS PREDEFINIDOS
+
+val red = Color.Red
+red.ordinal
+Color.values
+Color.fromOrdinal(0)
+
+// LAS CASE CLASES SON, ENTRE OTRAS COSAS, INMUTABLES DEFINO UNA
+
+case class Person(name: String, relation: String)
+
+// CREO UNA INSTANCIA 
+
+val christina = Person("Christina", "niece")
+
+// NO LA PUEDO REASIGNAR 
+
+christina.name = "Fred"   // error: reassignment to val
