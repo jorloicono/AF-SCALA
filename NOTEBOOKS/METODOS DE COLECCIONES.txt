@@ -1,0 +1,123 @@
+// A great strength of Scala collections is that they come with dozens of methods out of the box, 
+// and those methods are consistently available across the immutable and mutable collections types. 
+// The benefits of this are that you no longer need to write custom for loops every time you need to work with a collection, 
+// and when you move from one project to another, you’ll find these same methods used, rather than more custom for loops.
+
+val a = List(10, 20, 30, 40, 10)      // List(10, 20, 30, 40, 10)
+
+a.distinct                            // List(10, 20, 30, 40)
+a.drop(2)                             // List(30, 40, 10)
+a.dropRight(2)                        // List(10, 20, 30)
+a.head                                // 10
+a.headOption                          // Some(10)
+a.init                                // List(10, 20, 30, 40)
+a.intersect(List(19,20,21))           // List(20)
+a.last                                // 10
+a.lastOption                          // Some(10)
+a.slice(2,4)                          // List(30, 40)
+a.tail                                // List(20, 30, 40, 10)
+a.take(3)                             // List(10, 20, 30)
+a.takeRight(2)                        // List(40, 10)
+
+// filter
+
+// these functions are all equivalent and return
+// the same data: List(10, 20, 10)
+
+a.filter((i: Int) => i < 25)   // 1. most explicit form
+a.filter((i) => i < 25)        // 2. `Int` is not required
+a.filter(i => i < 25)          // 3. the parens are not required
+a.filter(_ < 25)               // 4. `i` is not required
+
+// otros metodos
+
+a.dropWhile(_ < 25)   // List(30, 40, 10)
+a.filter(_ > 100)     // List()
+a.filterNot(_ < 25)   // List(30, 40)
+a.find(_ > 20)        // Some(30)
+a.takeWhile(_ < 30)   // List(10, 20)
+
+// map
+
+def double(i: Int) = i * 2
+
+// these all return `List(20, 40, 60, 80, 20)`
+a.map(i => double(i))
+a.map(double(_))
+a.map(double)
+
+// utilizar mas de uno 
+// yields `List(100, 200)`
+a.filter(_ < 40)
+ .takeWhile(_ < 30)
+ .map(_ * 10)
+
+ // listas que usaremos mas adelante
+
+val oneToTen = (1 to 10).toList
+val names = List("adam", "brandy", "chris", "david")
+
+// poner en mayusculas
+
+val capNames = names.map(_.capitalize)
+
+// map con las longitudes
+
+val nameLengthsMap = names.map(s => (s, s.length)).toMap
+
+// vector de booleanos
+
+val isLessThanFive = oneToTen.map(_ < 5)
+
+// ejemplo de filter con map 
+
+oneToTen.filter(_ < 4).map(_ * 10)
+
+// recorrer cada elemento de la lista
+
+names.foreach(println)
+
+// primeros y ultimos elementos
+
+oneToTen.head   // 1
+oneToTen.tail   // List(2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+names.head      // adam
+names.tail      // List(brandy, chris, david)
+
+// The take, takeRight, and takeWhile methods give you a nice way of “taking” the elements from a 
+// list that you want to use to create a new list. This is take and takeRight:
+
+
+oneToTen.take(1)        // List(1)
+oneToTen.take(2)        // List(1, 2)
+
+oneToTen.takeRight(1)   // List(10)
+oneToTen.takeRight(2)   // List(9, 10)
+
+// drop, dropRight, and dropWhile are essentially the opposite of their “take” counterparts, 
+// dropping elements from a list. Here are some examples:
+
+
+oneToTen.drop(1)        // List(2, 3, 4, 5, 6, 7, 8, 9, 10)
+oneToTen.drop(5)        // List(6, 7, 8, 9, 10)
+
+oneToTen.dropRight(8)   // List(1, 2)
+oneToTen.dropRight(7)   // List(1, 2, 3)
+
+oneToTen.dropWhile(_ < 5)       // List(5, 6, 7, 8, 9, 10)
+names.dropWhile(_ != "chris")   // List(chris, david)
+
+// When you hear the term, “map reduce,” the “reduce” part refers to methods like reduce. 
+// It takes a function (or anonymous function) and applies that function to successive elements in the list.
+
+def add(x: Int, y: Int): Int =
+  val theSum = x + y
+  println(s"received $x and $y, their sum is $theSum")
+  theSum
+  
+val a = List(1,2,3,4)
+a.reduce(add)
+
+a.reduce(_ + _)
+a.reduce(_ * _)

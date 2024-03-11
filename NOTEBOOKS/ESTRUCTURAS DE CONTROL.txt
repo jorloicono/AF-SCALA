@@ -1,5 +1,9 @@
 // IF ELSE
 val x=1
+
+if x == 1 then println(x)
+
+
 if x == 1 then
   println("x is 1, as you can see:")
   println(x)
@@ -14,6 +18,10 @@ else
   println("positive")
 
 // DEFINIR VARIABLE IF ELSE
+
+// aqui no hace falta el then!
+
+val result = if (y == 10) "Diez" else "Otro"
 
 def compare(a: Int, b: Int): Int =
   if a < b then

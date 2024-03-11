@@ -1,0 +1,123 @@
+// LAS LAMBDA SON FUNCIONES ANONIMAS QUE PASAMOS COMO ARGUMENTO A FUNCIONES DE ORDEN SUPERIOR
+
+// POR EJEMPLO TENGO ESTA LISTA
+
+val ints = List(1, 2, 3)
+
+// POR SER OBJETO DE LA CLASE LISTA TIENE EL METODO MAP, LE PUEDO PASAR A MAP UNA LAMBDA COMO EN PYTHON, EN ESTE CASO SE PASA ASI _*2
+
+val doubledInts = ints.map(_ * 2)   // List(2, 4, 6)
+
+// OTRA MANERA DE ESCRIBIRLO MAS PARECIDA A PYTHON ES
+
+val doubledInts2 = ints.map((i: Int) => i * 2)
+
+// OTRO EJEMPLO PODRIA SER 
+
+ints.foreach((i: Int) => println(i))
+
+// PODRIA REDUCIRSE A 
+
+ints.foreach(println(_))
+
+// LA GRACIA DE LAS FUNCIONES ANTERIORES ES QUE SON ANONIMAS, PERO SI QUEREMOS PODEMOS AGREGARLAS A UNA VARIABLE Y CREAR VARIABLES DE TIPO FUNCION
+
+val double = (i: Int) => i * 2
+
+// EL NOMBRE ES DOUBLE Y AHORA LA PUEDO INVOCAR
+
+val x = double(2)
+
+// O PASARLA COMO ARGUMENTO
+
+List(1, 2, 3).map(double)   // List(2, 4, 6)
+
+// Cuando miras la documentación de Scaladoc para el método `map`, ves que está definido para aceptar una función:
+
+// def map[B](f: (A) => B): List[B]
+
+// De hecho, el Scaladoc claramente indica: "f es la función que se aplicará a cada elemento". Pero a pesar de eso, de alguna manera puedes pasar un método a `map`, y aún funciona:
+
+
+def times10(i: Int) = i * 10   // un método
+List(1, 2, 3).map(times10)     // List(10,20,30)
+
+
+// ¿Porque puedes pasar un método a `map`, que espera una función?
+
+// La teoria detrás de esto se conoce como Expansión Eta. 
+// Convierte una expresión de tipo método en una expresión equivalente de tipo función, y lo hace de manera fluida y silenciosa.
+
+// Históricamente, los métodos han sido parte de la definición de una clase, aunque en Scala 3 puedes tener métodos fuera de las clases, 
+// como métodos de extensión.
+
+// A diferencia de los métodos, las funciones son objetos completos en sí mismos, lo que las convierte en entidades de primera clase.
+
+// Su sintaxis también es diferente. Este ejemplo muestra cómo definir un método y una función que realizan la misma tarea, determinando si el entero dado es par:
+
+def isEvenMethod(i: Int) = i % 2 == 0         // un método
+val isEvenFunction = (i: Int) => i % 2 == 0   // una función
+
+// La función realmente es un objeto, por lo que puedes usarla como cualquier otra variable, como ponerla en una lista:
+
+val funciones = List(isEvenFunction)
+
+// Pero con metodos no podia  este ejemplo muestra el mensaje de error de Scala 2 (cambiar version y mostrarlo en scastie)
+
+val métodos = List(isEvenMethod)
+
+
+//La parte importante para Scala 3 es que la tecnología de Expansión Eta se ha mejorado, por lo que ahora cuando intentas usar un 
+// método como una variable, simplemente funciona, no tienes que manejar la conversión manualmente.
+
+//val funciones = List(isEvenFunction)   // funciona
+//val métodos = List(isEvenMethod)       // funciona
+
+// AQUI PUEDO VER UN EJEMPLO DE FILTER
+
+val numbers = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+val evenNumbers = numbers.filter(_ % 2 == 0)
+
+println(evenNumbers)
+
+// PUEDO PASAR FUNCION COMO PARAMETRO
+
+def sayHello(f: () => Unit): Unit = f()
+
+// AQUI DIGO QUE PASO UNA FUNCION SIN PARAMETROS NI RETURN Y SAYHELLO LA EJECUTARA
+
+// DEFINO ESTA FUNCION
+
+def helloJoe(): Unit = println("Hello, Joe")
+
+// LA LLAMO CON SAY HELLO
+
+sayHello(helloJoe)   // prints "Hello, Joe"
+
+// PUEDO PASARLE TAMBIEN FUNCIONES Y ARGUMENTOS A LA VEZ, AQUI DIGO QUE VENDRA UNA FUNCION Y UN ENTERO COMO ENTRADA PARA ESTA OTRA FUNCION
+
+def executeNTimes(f: () => Unit, n: Int): Unit =
+  for i <- 1 to n do f()
+
+// DEFINO ESTA FUNCION QUE PRINTEA 
+
+def helloWorld(): Unit = println("Hello, world")
+
+// Y LO PRUEBO
+
+executeNTimes(helloWorld, 3)
+
+// PUEDO TAMBIEN DEFINIR FUNCIONES QUE OBTENGAN FUNCIONES QUE DEVUELVEN PARAMETROS Y INJESTAN, AQUI POR EJEMPLO COJO FUNCION QUE TIENE DOS ENTRADAS Y DEVUELVE ENTERO Y DOS ENTEROS
+// MI FUNCION PADRE PRINTEA
+
+def executeAndPrint(f: (Int, Int) => Int, i: Int, j: Int): Unit =
+  println(f(i, j))
+
+// EJEMPLO
+
+def sum(x: Int, y: Int) = x + y
+def multiply(x: Int, y: Int) = x * y
+
+executeAndPrint(sum, 3, 11)       // prints 14
+executeAndPrint(multiply, 3, 9)   // prints 27

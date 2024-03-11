@@ -1,0 +1,257 @@
+// The List type is a linear, immutable sequence. This just means that it’s a linked-list that you can’t modify. 
+// Any time you want to add or remove List elements, you create a new List from an existing List.
+
+val ints = List(1, 2, 3)
+val names = List("Joel", "Chris", "Ed")
+
+// another way to construct a List
+val namesAgain = "Joel" :: "Chris" :: "Ed" :: Nil
+
+// You can also declare the List’s type, if you prefer, though it generally isn’t necessary:
+
+val ints: List[Int] = List(1, 2, 3)
+val names: List[String] = List("Joel", "Chris", "Ed")
+
+// One exception is when you have mixed types in a collection; in that case you may want to explicitly specify its type:
+
+val things: List[String | Int | Double] = List(1, "two", 3.0) // with union types
+val thingsAny: List[Any] = List(1, "two", 3.0)                // with any
+
+// Because List is immutable, you can’t add new elements to it. 
+// Instead, you create a new list by prepending or appending elements to an existing List. For instance, given this List:
+
+val a = List(1, 2, 3)
+
+// When working with a List, prepend one element with ::, and prepend another List with :::, as shown here:
+
+val b = 0 :: a              // List(0, 1, 2, 3)
+val c = List(-1, 0) ::: a   // List(-1, 0, 1, 2, 3)
+
+// How to loop over lists. Given a List of names:
+
+val names = List("Joel", "Chris", "Ed")
+
+// you can print each string like this:
+
+for (name <- names) println(name)
+for name <- names do println(name)
+
+// Vector is an indexed, immutable sequence. The “indexed” part of the description means that it provides random access and update in effectively constant time, 
+// so you can access Vector elements rapidly by their index value, such as accessing listOfPeople(123_456_789).
+
+// In general, except for the difference that (a) Vector is indexed and List is not, and (b) List has the :: method, the two types work the same, 
+// so we’ll quickly run through the following examples.
+
+// Here are a few ways you can create a Vector:
+
+
+val nums = Vector(1, 2, 3, 4, 5)
+
+val strings = Vector("one", "two")
+
+// Because Vector is immutable, you can’t add new elements to it. 
+// Instead, you create a new sequence by appending or prepending elements to an existing Vector. These examples show how to append elements to a Vector:
+
+
+val a = Vector(1,2,3)         // Vector(1, 2, 3)
+val b = a :+ 4                // Vector(1, 2, 3, 4)
+val c = a ++ Vector(4, 5)     // Vector(1, 2, 3, 4, 5)
+
+// Finally, you use a Vector in a for loop just like a List, ArrayBuffer, or any other sequence:
+
+val names = Vector("Joel", "Chris", "Ed")
+
+for (name <- names) println(name)
+
+val names = Vector("Joel", "Chris", "Ed")
+for name <- names do println(name)
+
+// ArrayBuffer
+// Use ArrayBuffer when you need a general-purpose, mutable indexed sequence in your Scala applications. 
+// It’s mutable, so you can change its elements, and also resize it. Because it’s indexed, random access of elements is fast.
+
+// Creating an ArrayBuffer. To use an ArrayBuffer, first import it:
+
+
+import scala.collection.mutable.ArrayBuffer
+
+//If you need to start with an empty ArrayBuffer, just specify its type:
+
+var strings = ArrayBuffer[String]()
+var ints = ArrayBuffer[Int]()
+var people = ArrayBuffer[Person]()
+
+/ If you know the approximate size your ArrayBuffer eventually needs to be, you can create it with an initial size:
+
+
+// ready to hold 100,000 ints
+val buf = new ArrayBuffer[Int](100_000)
+
+// To create a new ArrayBuffer with initial elements, just specify its initial elements, just like a List or Vector:
+
+
+val nums = ArrayBuffer(1, 2, 3)
+val people = ArrayBuffer(
+  Person("Bert"),
+  Person("Ernie"),
+  Person("Grover")
+)
+
+//Adding elements to an ArrayBuffer. Append new elements to an ArrayBuffer with the += and ++= methods. 
+
+// Or if you prefer methods with textual names you can also use append, appendAll, insert, insertAll, prepend, and prependAll.
+
+// Here are some examples of += and ++=:
+
+
+val nums = ArrayBuffer(1, 2, 3)   // ArrayBuffer(1, 2, 3)
+nums += 4                         // ArrayBuffer(1, 2, 3, 4)
+nums ++= List(5, 6)               // ArrayBuffer(1, 2, 3, 4, 5, 6)
+
+// Removing elements from an ArrayBuffer
+// ArrayBuffer is mutable, so it has methods like -=, --=, clear, remove, and more. These examples demonstrate the -= and --= methods:
+
+
+val a = ArrayBuffer.range('a', 'h')   // ArrayBuffer(a, b, c, d, e, f, g)
+a -= 'a'                              // ArrayBuffer(b, c, d, e, f, g)
+a --= Seq('b', 'c')                   // ArrayBuffer(d, e, f, g)
+a --= Set('d', 'e')                   // ArrayBuffer(f, g)
+
+//Updating ArrayBuffer elements
+// Update elements in an ArrayBuffer by either reassigning the desired element, or use the update method:
+
+
+val a = ArrayBuffer.range(1,5)        // ArrayBuffer(1, 2, 3, 4)
+a(2) = 50                             // ArrayBuffer(1, 2, 50, 4)
+a.update(0, 10)                       // ArrayBuffer(10, 2, 50, 4)
+
+//A Map is an iterable collection that consists of pairs of keys and values.
+// Scala has both mutable and immutable Map types, and this section 
+// demonstrates how to use the immutable Map.
+
+// Create an immutable Map like this:
+
+
+val states = Map(
+  "AK" -> "Alaska",
+  "AL" -> "Alabama",
+  "AZ" -> "Arizona"
+)
+
+// Once you have a Map you can traverse its elements in a for loop like this:
+
+for (k, v) <- states do println(s"key: $k, value: $v")
+
+// Accessing Map elements. Access map elements by specifying the desired key value in parentheses:
+
+
+val ak = states("AK")   // ak: String = Alaska
+val al = states("AL")   // al: String = Alabama
+
+//In practice, you’ll also use methods like keys, keySet, 
+// keysIterator, for loops, and higher-order functions like map 
+// to work with Map keys and values.
+
+// Adding elements to a Map. Add elements to an immutable map using + and ++, remembering to assign the result to a new variable:
+
+val a = Map(1 -> "one")    // a: Map(1 -> one)
+val b = a + (2 -> "two")   // b: Map(1 -> one, 2 -> two)
+val c = b ++ Seq(
+  3 -> "three",
+  4 -> "four"
+)
+// c: Map(1 -> one, 2 -> two, 3 -> three, 4 -> four)
+
+// Removing elements from a Map. Remove elements from an immutable 
+// map using - or -- and the key values to remove, remembering to 
+// assign the result to a new variable:
+
+
+val a = Map(
+  1 -> "one",
+  2 -> "two",
+  3 -> "three",
+  4 -> "four"
+)
+
+val b = a - 4       // b: Map(1 -> one, 2 -> two, 3 -> three)
+val c = a - 4 - 3   // c: Map(1 -> one, 2 -> two)
+
+// Updating Map elements
+// To update elements in an immutable map, use the updated 
+// method (or the + operator) while assigning the result to a new variable:
+
+
+val a = Map(
+  1 -> "one",
+  2 -> "two",
+  3 -> "three"
+)
+
+val b = a.updated(3, "THREE!")   // b: Map(1 -> one, 2 -> two, 3 -> THREE!)
+val c = a + (2 -> "TWO...")      // c: Map(1 -> one, 2 -> TWO..., 3 -> three)
+
+// The Scala Set is an iterable collection with no duplicate elements.
+
+//Scala has both mutable and immutable Set types. 
+// This section demonstrates the immutable Set.
+
+// Creating a Set Create new empty sets like this:
+
+
+val nums = Set[Int]()
+val letters = Set[Char]()
+
+// Create sets with initial data like this:
+
+
+val nums = Set(1, 2, 3, 3, 3)           // Set(1, 2, 3)
+val letters = Set('a', 'b', 'c', 'c')   // Set('a', 'b', 'c')
+
+//Adding elements to a Set Add elements to an immutable Set using + 
+// and ++, remembering to assign the result to a new variable:
+
+
+val a = Set(1, 2)                // Set(1, 2)
+val b = a + 3                    // Set(1, 2, 3)
+val c = b ++ Seq(4, 1, 5, 5)     // HashSet(5, 1, 2, 3, 4)
+
+// Notice that when you attempt to add duplicate elements, 
+// they’re quietly dropped.
+
+// Also notice that the order of iteration of the elements is arbitrary.
+
+// Deleting elements from a Set
+// Remove elements from an immutable set using - and --, 
+// again assigning the result to a new variable:
+
+
+val a = Set(1, 2, 3, 4, 5)   // HashSet(5, 1, 2, 3, 4)
+val b = a - 5                // HashSet(1, 2, 3, 4)
+val c = b -- Seq(3, 4)       // HashSet(1, 2)
+
+// Range The Scala Range is often used to populate data structures and to iterate over for loops. These REPL examples demonstrate how to create ranges:
+
+
+1 to 5         // Range(1, 2, 3, 4, 5)
+1 until 5      // Range(1, 2, 3, 4)
+1 to 10 by 2   // Range(1, 3, 5, 7, 9)
+'a' to 'c'     // NumericRange(a, b, c)
+
+// You can use ranges to populate collections:
+
+
+val x = (1 to 5).toList     // List(1, 2, 3, 4, 5)
+val x = (1 to 5).toBuffer   // ArrayBuffer(1, 2, 3, 4, 5)
+
+// They’re also used in for loops:
+
+for (i <- 1 to 3) println(i)
+for i <- 1 to 3 do println(i)
+
+// There are also range methods on :
+
+
+Vector.range(1, 5)       // Vector(1, 2, 3, 4)
+List.range(1, 10, 2)     // List(1, 3, 5, 7, 9)
+Set.range(1, 10)         // HashSet(5, 1, 6, 9, 2, 7, 3, 8, 4)
