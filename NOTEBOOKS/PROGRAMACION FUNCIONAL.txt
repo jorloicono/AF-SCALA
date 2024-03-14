@@ -1,0 +1,184 @@
+// For example, imagine that you have a list of names—a List[String]—that are all in lowercase, 
+// and you want to find all the names that begin with the letter "j", and then you want to 
+// capitalize those names. In FP you write this code:
+
+
+val a = List("jane", "jon", "mary", "joe")
+val b = a.filter(_.startsWith("j"))
+         .map(_.capitalize)
+
+// As shown, you don’t mutate the original list a. Instead, you apply filtering and transformation functions 
+// to a to create a new collection, and assign that result to the new immutable variable b.
+
+Similarly, in FP you don’t create classes with mutable var constructor parameters. That is, you don’t write this:
+
+
+// don’t do this in FP
+class Person(var firstName: String, var lastName: String)
+             ---                    ---
+
+Instead, you typically create case classes, whose constructor parameters are val by default:
+
+
+case class Person(firstName: String, lastName: String)
+
+Now you create a Person instance as a val field:
+
+
+val reginald = Person("Reginald", "Dwight")
+
+// Then, when you need to make a change to the data, you use the copy method that comes with a 
+// case class to “update the data as you make a copy,” like this:
+
+
+val elton = reginald.copy(
+  firstName = "Elton",   // update the first name
+  lastName = "John"      // update the last name
+)
+
+// EXCEPCIONES
+
+def makeInt(s: String): Option[Int] =
+  try {
+    Some(Integer.parseInt(s.trim))
+  } catch {
+    case e: Exception => None
+  }
+
+// You declare that makeInt returns an Option type
+// If makeInt receives a string it can convert to an Int, the answer is wrapped inside a Some
+// If makeInt receives a string it can’t convert, it returns a None
+
+// This code can be read as, “When the given string converts to an integer, return the Int wrapped inside a Some, // such as Some(1). When the string can’t be converted to an integer, an exception is thrown and caught, and the 
+// method returns a None value.”
+
+// These examples show how makeInt works:
+
+
+val a = makeInt("1")     // Some(1)
+val b = makeInt("one")   // None
+// As shown, the string "1" results in a Some(1), and the string "one" results in a None. This is the essence of
+// the Option approach to error handling. As shown, this technique is used so methods can return values instead of 
+// exceptions. In other situations, Option values are also used to replace null values.
+
+
+// Now imagine that you’re a consumer of the makeInt method. You know that it returns a subclass of Option[Int], so // the question becomes, how do you work with these return types?
+
+// There are two common answers, depending on your needs:
+
+// Use a match expression
+// Use a for expression
+
+// Using a match expression
+// One possible solution is to use a match expression:
+
+
+makeInt(x) match {
+  case Some(i) => println(i)
+  case None => println("That didn’t work.")
+}
+
+// In this example, if x can be converted to an Int, the expression on the right-hand side of the first case clause // is evaluated; if x can’t be converted to an Int, the expression on the right-hand side of the second case clause // is evaluated.
+
+// Using a for expression
+// Another common solution is to use a for expression—i.e., the for/yield combination that was shown earlier in 
+// this book. For instance, imagine that you want to convert three strings to integer values, and then add them 
+// together. This is how you do that with a for expression and makeInt:
+
+
+val y = for {
+  a <- makeInt(stringA)
+  b <- makeInt(stringB)
+  c <- makeInt(stringC)
+} yield {
+  a + b + c
+}
+
+
+// After that expression runs, y will be one of two things:
+
+// If all three strings convert to Int values, y will be a Some[Int], i.e., an integer wrapped inside a Some
+// If any of the three strings can’t be converted to an Int, y will be a None
+// You can test this for yourself:
+
+
+val stringA = "1"
+val stringB = "2"
+val stringC = "3"
+
+val y = for {
+  a <- makeInt(stringA)
+  b <- makeInt(stringB)
+  c <- makeInt(stringC)
+} yield {
+  a + b + c
+}
+
+// With that sample data, the variable y will have the value Some(6).
+
+// To see the failure case, change any of those strings to something that won’t convert to an integer. When you do // that, you’ll see that y is a None:
+
+
+y: Option[Int] = None
+
+// Using Option to replace null
+// Getting back to null values, a place where a null value can silently creep into your code is with a class like this:
+
+
+class Address(
+  var street1: String,
+  var street2: String,
+  var city: String,
+  var state: String,
+  var zip: String
+)
+
+// While every address on Earth has a street1 value, the street2 value is optional. As a result, the street2 field can be assigned a null value:
+
+
+val santa = new Address(
+  "1 Main Street",
+  null,               // <-- D’oh! A null value!
+  "North Pole",
+  "Alaska",
+  "99705"
+)
+val santa = Address(
+  "1 Main Street",
+  null,               // <-- D’oh! A null value!
+  "North Pole",
+  "Alaska",
+  "99705"
+)
+
+// Historically, developers have used blank strings and null values in this situation, both of which are hacks to 
+// work around the root problem: street2 is an optional field. In Scala—and other modern languages—the correct 
+// solution is to declare up front that street2 is optional:
+
+
+class Address(
+  var street1: String,
+  var street2: Option[String],   // an optional value
+  var city: String, 
+  var state: String, 
+  var zip: String
+)
+
+// Now developers can write more accurate code like this:
+
+val santa = Address(
+  "1 Main Street",
+  None,           // 'street2' has no value
+  "North Pole",
+  "Alaska",
+  "99705"
+)
+or this:
+
+val santa = Address(
+  "123 Main Street",
+  Some("Apt. 2B"),
+  "Talkeetna",
+  "Alaska",
+  "99676"
+)

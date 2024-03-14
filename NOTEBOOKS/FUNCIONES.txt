@@ -53,6 +53,12 @@ List(1, 2, 3).map(times10)     // List(10,20,30)
 
 // A diferencia de los métodos, las funciones son objetos completos en sí mismos, lo que las convierte en entidades de primera clase.
 
+// En Scala, las funciones son los elementos que realmente se consideran valores de primera clase.
+
+// Una característica de los valores de primera clase es que pueden ser tratados como cualquier otro valor del lenguaje: asignados a variables, pasados como argumentos a  // funciones, devueltos como resultados de funciones y así sucesivamente. Esto es cierto para las funciones en Scala, pero no para los métodos.
+
+// Los métodos, por otro lado, son miembros de objetos o clases y no pueden ser tratados directamente como valores independientes. Sin embargo, puedes obtener una referencia // a un método utilizando la notación de eta-expansión, que convierte el método en una función. Pero esto es una conversión, y no implica que los métodos sean valores de // primera clase.
+
 // Su sintaxis también es diferente. Este ejemplo muestra cómo definir un método y una función que realizan la misma tarea, determinando si el entero dado es par:
 
 def isEvenMethod(i: Int) = i % 2 == 0         // un método
